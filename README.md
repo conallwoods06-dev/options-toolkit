@@ -17,6 +17,7 @@ Two independent pricing methods agree: as the number of steps grows, the binomia
 ![Monte Carlo chart](images/monte_carlo.png)
 
 The Monte Carlo price and its 95% confidence interval narrow towards the Black-Scholes value as simulations increase. The error shrinks with the square root of the number of simulations: 100× more simulations gives a 10× tighter estimate.
+Antithetic variates reduce the standard error by ~30% at no extra simulation cost (equivalent to doubling the number of simulations).
 
 ## Features
 
