@@ -47,3 +47,15 @@ def test_put_call_parity_approximately():
     c, _ = monte_carlo_price(S, K, T, r, sigma, seed=42)
     p, _ = monte_carlo_price(S, K, T, r, sigma, option_type="put", seed=42)
     assert c - p == pytest.approx(S - K * np.exp(-r * T), abs=0.2)
+
+@pytest.mark.parametrize("option_type", ["call", "put"])
+def test_antithetic_reduces_error(option_type):
+    """Mirroring each random number should give a tighter estimate for the same work."""
+    _, se_plain = monte_carlo_price(S, K, T, r, sigma, option_type=option_type, seed=42)
+    _, se_anti = monte_carlo_price(S, K, T, r, sigma, option_type=option_type, seed=42, antithetic=True)
+    assert se_anti < se_plain
+
+
+def test_antithetic_agrees_with_black_scholes():
+    price, se = monte_carlo_price(S, K, T, r, sigma, seed=42, antithetic=True)
+    assert abs(price - call_price(S, K, T, r, sigma)) < 3 * se
