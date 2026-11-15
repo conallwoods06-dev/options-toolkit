@@ -42,6 +42,14 @@ def put_price(S, K, T, r, sigma):
     d1, d2 = _d1_d2(S, K, T, r, sigma)
     return K * np.exp(-r * T) * norm.cdf(-d2) - S * norm.cdf(-d1)
 
+def prob_in_the_money(S, K, T, r, sigma, option_type="call"):
+    """Risk-neutral probability the option finishes in the money."""
+    _check_inputs(S, K, T, sigma)
+    _, d2 = _d1_d2(S, K, T, r, sigma)
+    if option_type == "call":
+        return norm.cdf(d2)
+    return norm.cdf(-d2)
+
 
 # ---------------------------------------------------------------------------
 # The Greeks: how the option price responds to changes in each input

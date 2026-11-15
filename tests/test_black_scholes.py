@@ -7,7 +7,7 @@ import numpy as np
 import pytest
 
 from optionskit.black_scholes import (
-    call_price, put_price, delta, gamma, vega, theta, rho,
+    call_price, put_price, delta, gamma, vega, theta, rho, prob_in_the_money,
 )
 
 # A standard textbook case: at-the-money, 1 year, 5% rates, 20% vol
@@ -63,3 +63,14 @@ def test_bad_inputs_raise():
         call_price(S, K, 0, r, sigma)
     with pytest.raises(ValueError):
         call_price(S, K, T, r, -0.1)
+
+def test_prob_itm_known_values():
+    assert prob_in_the_money(100, 100, 1, 0.05, 0.2) == pytest.approx(0.56, abs=0.01)
+    assert prob_in_the_money(100, 120, 1, 0.05, 0.2) == pytest.approx(0.22, abs=0.01)
+
+
+def test_call_and_put_prob_add_to_one():
+    """The stock either finishes above the strike or below it."""
+    p_call = prob_in_the_money(100, 110, 1, 0.05, 0.2, "call")
+    p_put = prob_in_the_money(100, 110, 1, 0.05, 0.2, "put")
+    assert p_call + p_put == pytest.approx(1.0)
