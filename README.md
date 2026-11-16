@@ -43,6 +43,8 @@ Combining strike and expiry: the put skew is steepest for short-dated options (d
 
 Simulating 20,000 paths of selling a call at 20% implied volatility and delta-hedging it daily. The hedge removes exposure to the stock's direction (the stock's expected return has no effect on P&L), leaving a bet on volatility: the seller profits when realised volatility comes in below implied and loses when it comes in above. Average P&L closely follows the rule of thumb **P&L ≈ vega × (implied − realised)**. Hedging more frequently reduces the spread of outcomes, following a square-root rule.
 
+**[▶ Try the live dashboard](https://your-app-name.streamlit.app)**
+
 ## Features
 
 - [x] Black-Scholes pricing for European calls and puts
@@ -53,7 +55,7 @@ Simulating 20,000 paths of selling a call at 20% implied volatility and delta-he
 - [x] Implied volatility solver
 - [x] Volatility smiles and 3D surface from real option chains
 - [x] Delta-hedging simulation
-- [ ] Interactive Streamlit dashboard
+- [x] Interactive Streamlit dashboard
 
 ## Getting started
 
