@@ -91,3 +91,40 @@ def load_smile(ticker, expiry, S=None, r=None):
     df["expiry"] = expiry
     df["T"] = T
     return df, S, r, T
+
+
+
+def load_surface(ticker, min_days=7, max_days=400):
+    """Load implied volatilities for every expiry between min_days and max_days away.
+
+    The spot price and interest rate are fetched once, so every expiry uses the same snapshot.
+    Expiries that fail to download are skipped with a message rather than stopping everything.
+    """
+    S = get_spot_price(ticker)
+    r = get_risk_free_rate()
+    frames = []
+    for expiry in get_expiries(ticker):
+        days = time_to_expiry(expiry) * 365
+        if not min_days <= days <= max_days:
+            continue
+        try:
+            df, _, _, _ = load_smile(ticker, expiry, S=S, r=r)
+        except Exception as error:
+            print(f"Skipping {expiry}: {error}")
+            continue
+        if len(df) > 0:
+            frames.append(df)
+            print(f"{expiry}: {len(df)} options")
+    return pd.concat(frames, ignore_index=True), S, r
+
+
+def atm_term_structure(surface):
+    """At-the-money implied volatility for each expiry, read off each smile at moneyness = 1."""
+    rows = []
+    for expiry, smile in surface.groupby("expiry"):
+        smile = smile.sort_values("moneyness")
+        if smile["moneyness"].min() < 1 < smile["moneyness"].max():
+            rows.append({"expiry": expiry,
+                         "days": smile["T"].iloc[0] * 365,
+                         "atm_iv": np.interp(1.0, smile["moneyness"], smile["iv"])})
+    return pd.DataFrame(rows).sort_values("days").reset_index(drop=True)

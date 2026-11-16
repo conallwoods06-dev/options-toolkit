@@ -25,6 +25,18 @@ Antithetic variates reduce the standard error by ~30% at no extra simulation cos
 
 Implied volatilities calculated from live SPY option prices (out-of-the-money options, cleaned for wide spreads and stale quotes). If Black-Scholes were exactly right, this would be a flat line. Instead, implied volatility rises steeply for low strikes: deep out-of-the-money puts are priced at up to ~94% volatility against ~13% near the money, reflecting the market's demand for crash protection. A smaller upturn appears for far out-of-the-money calls.
 
+### Term structure
+
+![Term structure](images/term_structure_SPY.png)
+
+At-the-money implied volatility has a hockey-stick shape: elevated at the front (~20.7% for options expiring within a week), dipping to ~16.9% around 45 days, then rising steadily to ~19.1% at one year. The upward slope beyond 45 days is typical; the elevated front end suggests the market is pricing more near-term turbulence than medium-term.
+
+### Implied volatility surface
+
+![Volatility surface](images/surface_SPY.png)
+
+Combining strike and expiry: the put skew is steepest for short-dated options (deep out-of-the-money puts priced at up to ~60% volatility) and flattens as expiry lengthens. An interactive version is in `images/surface_SPY.html`. Data snapshot saved in `data/` for reproducibility.
+
 ## Features
 
 - [x] Black-Scholes pricing for European calls and puts
@@ -33,7 +45,7 @@ Implied volatilities calculated from live SPY option prices (out-of-the-money op
 - [x] Binomial tree pricer (European and American)
 - [x] Monte Carlo pricer
 - [x] Implied volatility solver
-- [ ] Volatility smiles and 3D surface from real option chains
+- [x] Volatility smiles and 3D surface from real option chains
 - [ ] Delta-hedging simulation
 - [ ] Interactive Streamlit dashboard
 

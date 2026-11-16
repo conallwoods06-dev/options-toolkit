@@ -59,3 +59,16 @@ def test_recovers_the_skew():
 def test_time_to_expiry():
     now = datetime(2026, 11, 16, 21, 0, tzinfo=timezone.utc)
     assert time_to_expiry("2026-12-16", now) == pytest.approx(30 / 365)
+
+
+
+def test_atm_term_structure_reads_off_each_smile():
+    """For each expiry, the at-the-money vol should be read off the smile where strike = spot."""
+    from optionskit.market_data import atm_term_structure
+    frames = []
+    for days, atm in [(30, 0.14), (90, 0.16)]:
+        frames.append(pd.DataFrame({"moneyness": [0.9, 1.0, 1.1], "iv": [atm + 0.05, atm, atm - 0.01],
+                                    "expiry": f"E{days}", "T": days / 365}))
+    terms = atm_term_structure(pd.concat(frames, ignore_index=True))
+    assert list(terms["days"].round()) == [30, 90]
+    assert np.allclose(terms["atm_iv"], [0.14, 0.16])
